@@ -24,6 +24,7 @@
     <ProjectGuid>{bd535293-c15b-4072-af5c-e40121431f43}</ProjectGuid>
     <RootNamespace>TinyHanTest</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>TinyHanTest2</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

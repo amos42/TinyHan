@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TinyHanTest", "TinyHanTest\TinyHanTest.vcxproj", "{BD535293-C15B-4072-AF5C-E40121431F43}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TinyHanTest2", "TinyHanTest2\TinyHanTest2.vcxproj", "{BD535293-C15B-4072-AF5C-E40121431F43}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TinyHanTest1", "TinyHanTest1\TinyHanTest1.vcxproj", "{1A1D0BBA-3DB6-4C02-9670-58EE269156D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,14 @@ Global
 		{BD535293-C15B-4072-AF5C-E40121431F43}.Release|x64.Build.0 = Release|x64
 		{BD535293-C15B-4072-AF5C-E40121431F43}.Release|x86.ActiveCfg = Release|Win32
 		{BD535293-C15B-4072-AF5C-E40121431F43}.Release|x86.Build.0 = Release|Win32
+		{1A1D0BBA-3DB6-4C02-9670-58EE269156D7}.Debug|x64.ActiveCfg = Debug|x64
+		{1A1D0BBA-3DB6-4C02-9670-58EE269156D7}.Debug|x64.Build.0 = Debug|x64
+		{1A1D0BBA-3DB6-4C02-9670-58EE269156D7}.Debug|x86.ActiveCfg = Debug|Win32
+		{1A1D0BBA-3DB6-4C02-9670-58EE269156D7}.Debug|x86.Build.0 = Debug|Win32
+		{1A1D0BBA-3DB6-4C02-9670-58EE269156D7}.Release|x64.ActiveCfg = Release|x64
+		{1A1D0BBA-3DB6-4C02-9670-58EE269156D7}.Release|x64.Build.0 = Release|x64
+		{1A1D0BBA-3DB6-4C02-9670-58EE269156D7}.Release|x86.ActiveCfg = Release|Win32
+		{1A1D0BBA-3DB6-4C02-9670-58EE269156D7}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
