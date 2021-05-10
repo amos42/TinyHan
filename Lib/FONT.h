@@ -50,8 +50,8 @@ extern "C" {
 #define NHAN1 19  /// 한글 초성 문자수
 #define NHAN2 21  /// 한글 중성 문자수
 #define NHAN3 27  /// 한글 종성 문자수 (종성 없는 경우 제외)
-#define NENG  95  /// 영어 문자수 ('!' 부터 '~' 까지)
-#define NEXT  2   /// 특수문자 (빈 문자와 무효 문자)
+#define NENG  96  /// 영어 문자수 ('!' 부터 '~' 까지)
+#define NEXT  1   /// 특수문자 (빈 문자와 무효 문자)
 
 /// <summary>
 /// 8x4x4 한글 폰트 인덱스 테이블

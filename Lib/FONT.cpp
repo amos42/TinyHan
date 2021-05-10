@@ -36,14 +36,14 @@
     4벌 : 중성 [ㅗ ㅛ ㅜ ㅠ ㅡ]
 */
 
-#define NTYPES1 8  /// 한글 초성 벌수
-#define NTYPES2 4  /// 한글 중성 벌수
-#define NTYPES3 4  /// 한글 종성 벌수
-
-#define NHAN1 19  /// 한글 초성 문자수
-#define NHAN2 21  /// 한글 중성 문자수
-#define NHAN3 27  /// 한글 종성 문자수 (종성 없는 경우 제외)
-#define NENG  95  /// 영어 문자수 ('!' 부터 '~' 까지)
+//#define NTYPES1 8  /// 한글 초성 벌수
+//#define NTYPES2 4  /// 한글 중성 벌수
+//#define NTYPES3 4  /// 한글 종성 벌수
+//
+//#define NHAN1 19  /// 한글 초성 문자수
+//#define NHAN2 21  /// 한글 중성 문자수
+//#define NHAN3 27  /// 한글 종성 문자수 (종성 없는 경우 제외)
+//#define NENG  96  /// 영어 문자수 (' ' 부터 '~' 까지)
 
 /// <summary>
 /// 8x4x4 한글 폰트 인덱스 테이블
@@ -432,8 +432,9 @@ const unsigned short HanFont3[NTYPES3 * NHAN3][16] = {
 /// 영문 폰트 (8x16)
 /// </summary>
 
-// 영문 폰트 ('!' 부터 '~' 까지)
+// 영문 폰트 (' ' 부터 '~' 까지)
 const unsigned char EngFont[NENG][16] = {
+    {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}, // 공백
     {0x00,0x00,0x00,0x18,0x18,0x18,0x18,0x18,0x18,0x18,0x18,0x00,0x18,0x18,0x00,0x00},
     {0x00,0x6C,0x6C,0x6C,0x48,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00},
     {0x00,0x00,0x00,0x36,0x36,0x36,0xFF,0x6C,0x6C,0x6C,0xFE,0xD8,0xD8,0xD8,0x00,0x00},
@@ -533,11 +534,43 @@ const unsigned char EngFont[NENG][16] = {
 
 // 빈 문자와 무효 문자
 const unsigned char ExtFont[NEXT][16] = {
-    {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}, // 공백
     {0xFF,0x81,0x81,0x81,0x81,0x81,0x81,0x81,0x81,0x81,0x81,0x81,0x81,0x81,0x81,0xFF}  // 사각형
     //{0xAA,0x80,0x01,0x80,0x01,0x80,0x01,0x80,0x01,0x80,0x01,0x80,0x01,0x80,0x01,0x55}  // 점선 사각형
     //{0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55,0xAA,0x55}  // 그레이 블럭
 };
+
+/// <summary>
+/// 유니코드로 한글 코드로 폰트 이미지를 얻는다.
+/// </summary>
+/// <param name="c">유니코드 문자</param>
+/// <param name="widthByte">수평 바이트 크기 포인터</param>
+/// <param name="output">폰트 출력 버퍼. word aligned 되어 있어야 한다.</param>
+/// <returns>16x16 비트맵 이미지 포인터</returns>
+int GetFontWidth(unsigned short c)
+{
+    if (c >= 0x0020 && c <= 0x007E)
+    {
+        return 8;
+    }
+    else if (c >= 0x3131 && c <= 0x3142)
+    {
+        return 16;
+    }
+    else if (c >= 0x314F && c <= 0x3163)
+    {
+        return 16;
+    }
+    else if (c >= 0xAC00 && c <= 0xD7FF)
+    {
+        return 16;
+    }
+    else
+    {
+        return 8;
+    }
+
+    return 0;
+}
 
 /// <summary>
 /// 유니코드로 한글 코드로 폰트 이미지를 얻는다.
@@ -585,15 +618,10 @@ unsigned char * GetFontImage(unsigned short c, int *widthByte, unsigned char* ou
     //h2 = idxtbl2[h2];                       // 중성 인덱스 코드
     //h3 = idxtbl3[h3];                       // 종성 인덱스 코드
 
-    if (c == 0x0020)
+    if (c >= 0x0020 && c <= 0x007E)
     {
         if (widthByte != NULL) *widthByte = 1;
-        return (unsigned char*)(&ExtFont[0]);
-    }
-    else if (c >= 0x0021 && c <= 0x007E)
-    {
-        if (widthByte != NULL) *widthByte = 1;
-        int ec = c - 0x0021;
+        int ec = c - 0x0020;
         return (unsigned char*)(&EngFont[ec]);
     }
     else if (c >= 0x3131 && c <= 0x3142)
@@ -641,7 +669,7 @@ unsigned char * GetFontImage(unsigned short c, int *widthByte, unsigned char* ou
     else 
     {
         if (widthByte != NULL) *widthByte = 1;
-        return (unsigned char*)(&ExtFont[1]);
+        return (unsigned char*)(&ExtFont[0]);
     }
 
     if (widthByte != NULL) *widthByte = 0;

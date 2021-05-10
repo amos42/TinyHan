@@ -57,20 +57,19 @@ void PutImage(unsigned char* freamBuffer, int frameWidth, int frameHeight, unsig
         int k = firstSkip;
         v <<= firstSkip;
 
-        for (int j = 0; j < imageWidth; j++, k++) {
+        for (int j = 0; j < imageWidth; j++) {
             if (v & 0x80) {
                 *tp = color;
             }
             tp++;
 
-            if (k >= 8) {
-                if(j < imageWidth-1)
-                    v = *sp++;
-                k = 0;
-                continue;
+            if (++k < 8) {
+                v <<= 1;
             }
-
-            v <<= 1;
+            else {
+                if (j < imageWidth - 1) v = *sp++;
+                k = 0;
+            }
         }
 
         sp += lastSkip;
@@ -86,15 +85,15 @@ int main(int argc, char* argv[])
     unsigned char output[16 * 2];
 
     // 유니코드 문자열
-    //const wchar_t* str = L"안녕Ab12345678910123";
-    const wchar_t* str = L"안";
+    const wchar_t* str = L"안녕Ab12345678910123";
+    //const wchar_t* str = L"안";
     const char* utfstr = "\x55\x54\x46\x2D\x38\x20\xEC\x9D\xB8\xEC\xBD\x94\xEB\x94\xA9";
 
     wchar_t* ptr = (wchar_t*)str;
     //wchar_t* ptr = utf8_to_usc2((char*)utfstr, (wchar_t*)output0);
 
     //int len = wcslen(ptr);
-    int frameWidth = 120;
+    int frameWidth = 80;
     int frameHeight = 16;
 
     unsigned char *frameBuffer = new unsigned char[frameWidth * frameHeight];
