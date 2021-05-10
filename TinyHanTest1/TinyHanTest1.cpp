@@ -8,58 +8,72 @@
 #include "UTF8.h"
 
 
-void PutImage(unsigned char* freamBuffer, int frameWidth, int frameHeight, unsigned char* imageBuffer, int imageWidthByte, int imageHeight, int startX, int startY, unsigned char color)
+/// <summary>
+/// 폰트 이미지를 클리핑하여 찍는다.
+/// </summary>
+/// <param name="freamBuffer">프레임 버퍼</param>
+/// <param name="frameWidth">프레임 버퍼의 수평 크기</param>
+/// <param name="frameHeight">프레임 버퍼의 수직 크기</param>
+/// <param name="fontImage">폰트 이미지</param>
+/// <param name="fontImageWidthByte">폰트 이미지의 수평 바이트 수</param>
+/// <param name="fontImageHeight">폰트 이미지의 수직 크기</param>
+/// <param name="offsetX">폰트 출력 수평 offset</param>
+/// <param name="offsetY">폰트 출력 수직 offset</param>
+/// <param name="colorIndex">출력 컬러 인덱스</param>
+void PutImage(unsigned char* freamBuffer, int frameWidth, int frameHeight, unsigned char* fontImage, int fontImageWidthByte, int fontImageHeight, int offsetX, int offsetY, unsigned char colorIndex)
 {
     // 화면우측이나 아래로 벗어나면 종료
-    if (startY >= frameHeight || startX >= frameWidth) return;
+    if (offsetY >= frameHeight || offsetX >= frameWidth) return;
 
-    int imageWidth = imageWidthByte * 8;
+    int imageWidth = fontImageWidthByte * 8;
 
     // 화면 좌측이나 위로 벗어나면 종료
-    if (startY + imageHeight < 0 || startX + imageWidth < 0) return;
+    if (offsetY + fontImageHeight < 0 || offsetX + imageWidth < 0) return;
 
-    unsigned char* sp = imageBuffer;
+    unsigned char* sp = fontImage;
 
     // 윗쪽 클리핑
-    if (startY < 0) {
-        int th = -startY;
-        startY = 0;
-        sp += th * imageWidthByte;
+    if (offsetY < 0) {
+        int th = -offsetY;
+        offsetY = 0;
+        sp += th * fontImageWidthByte;
+        fontImageHeight -= th;
     }
 
     // 아랫쪽 클리핑
-    if (startY + imageHeight > frameHeight) {
-        imageHeight -= startY + imageHeight - frameHeight;
+    if (offsetY + fontImageHeight > frameHeight) {
+        fontImageHeight -= offsetY + fontImageHeight - frameHeight;
     }
 
     int firstSkip = 0;
     int lastSkip = 0;
 
     // 왼쪽 클리핑
-    if (startX < 0) {
-        int tw = -startX;
-        startX = 0;
+    if (offsetX < 0) {
+        int tw = -offsetX;
+        offsetX = 0;
         firstSkip = tw % 8;
 
         sp += tw / 8;
         lastSkip += tw / 8;
+        imageWidth -= tw;
     }
 
     // 오른쪽 클리핑
-    if (startX + imageWidth > frameWidth) {
-        imageWidth -= startX + imageWidth - frameWidth;
+    if (offsetX + imageWidth > frameWidth) {
+        imageWidth -= offsetX + imageWidth - frameWidth;
     }
 
-    unsigned char* tp = freamBuffer + startY * frameWidth + startX;
+    unsigned char* tp = freamBuffer + offsetY * frameWidth + offsetX;
 
-    for (int i = 0; i < imageHeight; i++) {
+    for (int i = 0; i < fontImageHeight; i++) {
         unsigned char v = *sp++;
         int k = firstSkip;
         v <<= firstSkip;
 
         for (int j = 0; j < imageWidth; j++) {
             if (v & 0x80) {
-                *tp = color;
+                *tp = colorIndex;
             }
             tp++;
 
@@ -85,7 +99,7 @@ int main(int argc, char* argv[])
     unsigned char output[16 * 2];
 
     // 유니코드 문자열
-    const wchar_t* str = L"안녕Ab12345678910123";
+    const wchar_t* str = L"안녕Ab123 \x1\x1";
     //const wchar_t* str = L"안";
     const char* utfstr = "\x55\x54\x46\x2D\x38\x20\xEC\x9D\xB8\xEC\xBD\x94\xEB\x94\xA9";
 
@@ -108,7 +122,7 @@ int main(int argc, char* argv[])
 
         if (img != NULL) 
         {
-            PutImage(frameBuffer, frameWidth, 16, img, widthByte, frameHeight, x, 0, 0xff);
+            PutImage(frameBuffer, frameWidth, 16, img, widthByte, frameHeight, x-3, -3, 0xff);
             x += widthByte * 8;
         }
         else {
